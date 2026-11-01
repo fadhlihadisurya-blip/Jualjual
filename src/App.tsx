@@ -17,7 +17,7 @@ import {
   subscribeToUserTransactions,
   checkAndInitializeUserData
 } from './services/firestoreService';
-import { LogIn, Sparkles, ShieldCheck } from 'lucide-react';
+import { LogIn, ShieldCheck } from 'lucide-react';
 
 export default function App() {
   const [currentTab, setTab] = useState<TabType>('dashboard');
@@ -123,34 +123,7 @@ export default function App() {
         onOpenAuth={() => setIsAuthModalOpen(true)}
       />
 
-      {/* Guest Callout Banner when not signed in */}
-      {!currentUser && !authLoading && (
-        <div className="bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-700 text-white py-2 px-4 shadow-sm">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs gap-2">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-amber-300 shrink-0" />
-              <span>
-                Silakan <strong>Masuk / Daftar</strong> agar seluruh stok, produk, dan laporan keuangan terhubung ke akun Anda di Firestore.
-              </span>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                onClick={handleEnableGuestMode}
-                className="px-3 py-1 rounded-xl bg-white/10 hover:bg-white/20 transition-colors font-medium text-[11px] cursor-pointer"
-              >
-                Coba Mode Demo
-              </button>
-              <button
-                onClick={() => setIsAuthModalOpen(true)}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-white text-indigo-700 hover:bg-slate-100 px-3 py-1 font-bold transition-colors cursor-pointer shadow-xs"
-              >
-                <LogIn className="h-3.5 w-3.5" />
-                Masuk ke Akun
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* If not logged in and not in guest mode, show Welcome & Login Banner */}
       {!currentUser && !authLoading && materials.length === 0 && (
