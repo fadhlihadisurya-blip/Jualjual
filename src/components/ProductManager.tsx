@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import { Product, Material, ProductMaterial } from '../types';
 import { calculateProductHPP, calculateProductProfit, formatRupiah } from '../utils/calculator';
 import { PackageOpen, Plus, Edit2, Trash2, Search, Save, X, PlusCircle, MinusCircle, CheckCircle2 } from 'lucide-react';
-import { saveUserProduct, deleteUserProduct } from '../services/firestoreService';
+import { saveUserProduct, deleteUserProduct, saveUserMaterial } from '../services/firestoreService';
+import { MaterialSelect } from './MaterialSelect';
 
 interface ProductManagerProps {
   products: Product[];
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   materials: Material[];
+  setMaterials?: React.Dispatch<React.SetStateAction<Material[]>>;
   userId?: string;
 }
 
-export const ProductManager: React.FC<ProductManagerProps> = ({ products, setProducts, materials, userId }) => {
+export const ProductManager: React.FC<ProductManagerProps> = ({ products, setProducts, materials, setMaterials, userId }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -65,6 +67,26 @@ export const ProductManager: React.FC<ProductManagerProps> = ({ products, setPro
       updated[index].quantity = Number(value);
     }
     setSelectedMaterials(updated);
+  };
+
+  const handleAddNewMaterialOnTheFly = (name: string, index: number) => {
+    const newMat: Material = {
+      id: `mat-${Date.now()}`,
+      name,
+      unit: 'pcs',
+      totalStock: 100,
+      purchasePrice: 0,
+      initialQuantity: 100,
+      minStock: 5,
+      unitCost: 0
+    };
+    if (setMaterials) {
+      setMaterials(prev => [...prev, newMat]);
+    }
+    if (userId) {
+      saveUserMaterial(userId, newMat).catch(err => console.error("Error saving on-the-fly material:", err));
+    }
+    handleUpdateMaterialRow(index, 'materialId', newMat.id);
   };
 
   const handleSave = (e: React.FormEvent) => {
@@ -351,21 +373,12 @@ export const ProductManager: React.FC<ProductManagerProps> = ({ products, setPro
                       const subtotalMatCost = unitCost * sm.quantity;
                       return (
                         <div key={index} className="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
-                          <select
+                          <MaterialSelect
                             value={sm.materialId}
-                            onChange={(e) => handleUpdateMaterialRow(index, 'materialId', e.target.value)}
-                            className="flex-1 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-800 bg-white focus:outline-hidden"
-                          >
-                            {materials.map(m => {
-                              const cleanName = m.name.replace(/\s*\([^)]*\)/g, '').trim();
-                              const uc = m.initialQuantity > 0 ? m.purchasePrice / m.initialQuantity : m.unitCost || 0;
-                              return (
-                                <option key={m.id} value={m.id}>
-                                  {cleanName} ({formatRupiah(uc)} / {m.unit})
-                                </option>
-                              );
-                            })}
-                          </select>
+                            onChange={(newId) => handleUpdateMaterialRow(index, 'materialId', newId)}
+                            materials={materials}
+                            onAddNewMaterial={(name) => handleAddNewMaterialOnTheFly(name, index)}
+                          />
                           <div className="flex items-center gap-1 w-32">
                             <input
                               type="number"

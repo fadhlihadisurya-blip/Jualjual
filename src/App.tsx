@@ -184,6 +184,7 @@ export default function App() {
               products={products}
               setProducts={setProducts}
               materials={materials}
+              setMaterials={setMaterials}
               userId={currentUser?.uid}
             />
           )}

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Product, Material, CartItem, SaleTransaction, ProductMaterial } from '../types';
 import { calculateProductHPP, calculateProductProfit, formatRupiah } from '../utils/calculator';
 import { ShoppingCart, Plus, Minus, Trash2, Search, CheckCircle, AlertTriangle, Printer, User, X, PlusCircle, MinusCircle, Edit3, Banknote } from 'lucide-react';
-import { saveUserSaleTransaction } from '../services/firestoreService';
+import { saveUserSaleTransaction, saveUserMaterial } from '../services/firestoreService';
+import { MaterialSelect } from './MaterialSelect';
 
 interface POSProps {
   products: Product[];
@@ -61,6 +62,24 @@ export const POS: React.FC<POSProps> = ({ products, materials, setMaterials, tra
       updated[index].quantity = Number(value);
     }
     setCustomMaterials(updated);
+  };
+
+  const handleAddNewMaterialOnTheFly = (name: string, index: number) => {
+    const newMat: Material = {
+      id: `mat-${Date.now()}`,
+      name,
+      unit: 'pcs',
+      totalStock: 100,
+      purchasePrice: 0,
+      initialQuantity: 100,
+      minStock: 5,
+      unitCost: 0
+    };
+    setMaterials(prev => [...prev, newMat]);
+    if (userId) {
+      saveUserMaterial(userId, newMat).catch(err => console.error("Error saving on-the-fly material:", err));
+    }
+    handleUpdateMaterialRow(index, 'materialId', newMat.id);
   };
 
   const handleAddToCartWithCustomizations = () => {
@@ -520,21 +539,12 @@ export const POS: React.FC<POSProps> = ({ products, materials, setMaterials, tra
                       const cleanName = mat ? mat.name.replace(/\s*\([^)]*\)/g, '').trim() : 'Bahan';
                       return (
                         <div key={index} className="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
-                          <select
+                          <MaterialSelect
                             value={cm.materialId}
-                            onChange={(e) => handleUpdateMaterialRow(index, 'materialId', e.target.value)}
-                            className="flex-1 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-800 bg-white focus:outline-hidden"
-                          >
-                            {materials.map(m => {
-                              const cn = m.name.replace(/\s*\([^)]*\)/g, '').trim();
-                              const uc = m.initialQuantity > 0 ? m.purchasePrice / m.initialQuantity : m.unitCost || 0;
-                              return (
-                                <option key={m.id} value={m.id}>
-                                  {cn} ({formatRupiah(uc)} / {m.unit})
-                                </option>
-                              );
-                            })}
-                          </select>
+                            onChange={(newId) => handleUpdateMaterialRow(index, 'materialId', newId)}
+                            materials={materials}
+                            onAddNewMaterial={(name) => handleAddNewMaterialOnTheFly(name, index)}
+                          />
                           <div className="flex items-center gap-1 w-28">
                             <input
                               type="number"
