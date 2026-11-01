@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Profil pengguna toko pemilik data",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "storeName": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Material": {
+      "title": "Material",
+      "description": "Bahan baku untuk produksi dan perhitungan HPP modal milik user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "unit": { "type": "string" },
+        "totalStock": { "type": "number" },
+        "purchasePrice": { "type": "number" },
+        "initialQuantity": { "type": "number" },
+        "minStock": { "type": "number" },
+        "unitCost": { "type": "number" }
+      },
+      "required": ["id", "name", "unit", "totalStock", "purchasePrice", "initialQuantity", "minStock", "unitCost"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Katalog produk yang dijual beserta resep bahan baku milik user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "sellingPrice": { "type": "number" },
+        "materials": { "type": "array" }
+      },
+      "required": ["id", "name", "category", "sellingPrice", "materials"]
+    },
+    "SaleTransaction": {
+      "title": "SaleTransaction",
+      "description": "Riwayat transaksi penjualan, rincian item, modal HPP, laba, dan pembayaran milik user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "invoiceNumber": { "type": "string" },
+        "date": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerPhone": { "type": "string" },
+        "items": { "type": "array" },
+        "totalAmount": { "type": "number" },
+        "totalModal": { "type": "number" },
+        "totalProfit": { "type": "number" },
+        "paymentMethod": { "type": "string" },
+        "cashTendered": { "type": "number" },
+        "changeAmount": { "type": "number" }
+      },
+      "required": ["id", "invoiceNumber", "date", "customerName", "items", "totalAmount", "totalModal", "totalProfit", "paymentMethod"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Dokumen profil user pemilik data toko"
+    },
+    "/users/{userId}/materials/{materialId}": {
+      "schema": "Material",
+      "description": "Subkoleksi data bahan baku spesifik per pengguna"
+    },
+    "/users/{userId}/products/{productId}": {
+      "schema": "Product",
+      "description": "Subkoleksi katalog produk spesifik per pengguna"
+    },
+    "/users/{userId}/transactions/{transactionId}": {
+      "schema": "SaleTransaction",
+      "description": "Subkoleksi riwayat transaksi penjualan spesifik per pengguna"
+    }
+  }
+}

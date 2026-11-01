@@ -1,0 +1,6 @@
+{
+  "name": "LabaCraft POS & HPP Kalkulator",
+  "description": "Aplikasi penjualan berbasis web dengan kalkulasi modal bahan baku otomatis, manajemen stok, laporan keuangan, dan cetak invoice.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
