@@ -56,9 +56,9 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({ transaction, onClose
           {/* Company / Brand Header with Centered Logo & Invoice Number on Bottom Right */}
           <div className="border-b border-slate-200 pb-3 mb-4 flex flex-col items-center text-center">
             <img
-              src="/assets/aistudio/photo_2026-11-01_17-27-01_f3dd2785.jpg"
+              src="/assets/aistudio/photo_2026-11-01_17-27-01_f9a4aa07.jpg"
               alt="Paradise Buket & Gift Logo"
-              className="h-48 w-auto object-contain -mb-3"
+              className="h-56 md:h-64 w-auto object-contain mx-auto mb-2"
             />
             <div className="w-full flex justify-between items-end px-1">
               <div className="text-left text-xs text-slate-500">

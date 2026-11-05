@@ -11,6 +11,7 @@ import { MaterialManager } from './components/MaterialManager';
 import { ReportManager } from './components/ReportManager';
 import { InvoiceModal } from './components/InvoiceModal';
 import { AuthModal } from './components/AuthModal';
+import { InstallModal } from './components/InstallModal';
 import {
   subscribeToUserMaterials,
   subscribeToUserProducts,
@@ -24,6 +25,7 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
 
   // User-scoped data state
   const [materials, setMaterials] = useState<Material[]>([]);
@@ -121,6 +123,7 @@ export default function App() {
         materials={materials}
         currentUser={currentUser}
         onOpenAuth={() => setIsAuthModalOpen(true)}
+        onOpenInstall={() => setIsInstallModalOpen(true)}
       />
 
 
@@ -217,6 +220,12 @@ export default function App() {
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         currentUser={currentUser}
+      />
+
+      {/* iOS & Phone Install Guide Modal */}
+      <InstallModal
+        isOpen={isInstallModalOpen}
+        onClose={() => setIsInstallModalOpen(false)}
       />
     </div>
   );

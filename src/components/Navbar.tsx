@@ -1,6 +1,6 @@
 import React from 'react';
 import { TabType, Material } from '../types';
-import { LayoutDashboard, ShoppingCart, PackageOpen, Boxes, FileText, AlertTriangle, Sparkles, User as UserIcon, LogIn } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, PackageOpen, Boxes, FileText, AlertTriangle, Sparkles, User as UserIcon, LogIn, Smartphone } from 'lucide-react';
 import { User } from 'firebase/auth';
 
 interface NavbarProps {
@@ -9,9 +9,10 @@ interface NavbarProps {
   materials: Material[];
   currentUser: User | null;
   onOpenAuth: () => void;
+  onOpenInstall: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ currentTab, setTab, materials, currentUser, onOpenAuth }) => {
+export const Navbar: React.FC<NavbarProps> = ({ currentTab, setTab, materials, currentUser, onOpenAuth, onOpenInstall }) => {
   const lowStockCount = materials.filter(m => m.totalStock <= m.minStock).length;
 
   const navItems = [
@@ -70,16 +71,26 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setTab, materials, c
           </nav>
 
           {/* Quick Stats & User Profile Button */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             {lowStockCount > 0 && (
               <button
                 onClick={() => setTab('materials')}
-                className="hidden sm:flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-600 border border-rose-200 shadow-2xs hover:bg-rose-100 transition-colors cursor-pointer"
+                className="hidden lg:flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-600 border border-rose-200 shadow-2xs hover:bg-rose-100 transition-colors cursor-pointer"
               >
                 <AlertTriangle className="h-3.5 w-3.5 text-rose-500 animate-bounce" />
                 <span>{lowStockCount} Menipis</span>
               </button>
             )}
+
+            {/* Install on iOS / Phone button */}
+            <button
+              onClick={onOpenInstall}
+              title="Pasang di iPhone / iOS"
+              className="flex items-center gap-1.5 rounded-2xl bg-slate-100 hover:bg-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition-all cursor-pointer"
+            >
+              <Smartphone className="h-4 w-4 text-indigo-600" />
+              <span className="hidden sm:inline">Pasang di HP / iOS</span>
+            </button>
 
             {/* Auth Button */}
             <button

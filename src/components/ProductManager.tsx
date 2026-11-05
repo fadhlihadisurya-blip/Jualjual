@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Product, Material, ProductMaterial } from '../types';
 import { calculateProductHPP, calculateProductProfit, formatRupiah } from '../utils/calculator';
-import { PackageOpen, Plus, Edit2, Trash2, Search, Save, X, PlusCircle, MinusCircle, CheckCircle2 } from 'lucide-react';
+import { PackageOpen, Plus, Edit2, Trash2, Search, Save, X, PlusCircle, MinusCircle, CheckCircle2, Image as ImageIcon } from 'lucide-react';
 import { saveUserProduct, deleteUserProduct, saveUserMaterial } from '../services/firestoreService';
 import { MaterialSelect } from './MaterialSelect';
 
@@ -267,8 +267,8 @@ export const ProductManager: React.FC<ProductManagerProps> = ({ products, setPro
 
       {/* Add / Edit Product Modal with Recipe & Manual Price */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs overflow-y-auto cursor-pointer" onClick={() => setIsModalOpen(false)}>
-          <div className="relative w-full max-w-2xl rounded-3xl bg-white p-6 md:p-8 shadow-2xl my-8 cursor-default" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 p-4 pt-20 md:pt-28 pb-16 backdrop-blur-xs overflow-y-auto cursor-pointer" onClick={() => setIsModalOpen(false)}>
+          <div className="relative w-full max-w-2xl rounded-3xl bg-white p-6 md:p-8 shadow-2xl mb-8 cursor-default" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
               <h3 className="text-lg font-bold text-slate-900">
                 {editingProduct ? 'Edit Produk & Resep Bahan' : 'Tambah Produk Baru'}
@@ -310,29 +310,56 @@ export const ProductManager: React.FC<ProductManagerProps> = ({ products, setPro
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">URL Gambar (Opsional)</label>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  URL Gambar Produk (Opsional)
+                </label>
+                <div className="flex items-center gap-3 bg-slate-50 p-2.5 rounded-2xl border border-slate-200">
+                  <div className="relative h-12 w-12 rounded-xl bg-slate-200 overflow-hidden border border-slate-300 shrink-0 flex items-center justify-center">
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt="Preview Produk"
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=600';
+                        }}
+                      />
+                    ) : (
+                      <ImageIcon className="h-5 w-5 text-slate-400" />
+                    )}
+                  </div>
                   <input
-                    type="url"
-                    placeholder="https://images.unsplash.com/..."
+                    type="text"
+                    placeholder="Tempel URL gambar (https://...)"
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-800 focus:border-indigo-500 focus:outline-hidden"
+                    className="flex-1 rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-800 bg-white focus:border-indigo-500 focus:outline-hidden"
                   />
+                  {imageUrl && (
+                    <button
+                      type="button"
+                      onClick={() => setImageUrl('')}
+                      className="px-2.5 py-2 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors text-xs font-bold cursor-pointer shrink-0"
+                      title="Hapus URL Gambar"
+                    >
+                      Hapus
+                    </button>
+                  )}
                 </div>
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-indigo-700 mb-1">Harga Jual (Ketik Manual)</label>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    step="500"
-                    value={sellingPrice}
-                    onChange={(e) => setSellingPrice(Number(e.target.value))}
-                    className="w-full rounded-xl border-2 border-indigo-500 px-4 py-2.5 text-sm font-bold text-indigo-900 bg-indigo-50/30 focus:outline-hidden"
-                  />
-                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-indigo-700 mb-1">Harga Jual (Ketik Manual)</label>
+                <input
+                  type="number"
+                  required
+                  min="0"
+                  step="500"
+                  value={sellingPrice}
+                  onChange={(e) => setSellingPrice(Number(e.target.value))}
+                  className="w-full rounded-xl border-2 border-indigo-500 px-4 py-2.5 text-sm font-bold text-indigo-900 bg-indigo-50/30 focus:outline-hidden"
+                />
               </div>
 
               <div>
